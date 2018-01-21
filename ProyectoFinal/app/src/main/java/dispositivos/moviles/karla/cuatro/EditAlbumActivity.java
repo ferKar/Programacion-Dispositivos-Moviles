@@ -1,11 +1,13 @@
 package dispositivos.moviles.karla.cuatro;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import dispositivos.moviles.karla.cuatro.AlbumAdapter2.AlbumAdapter2;
 
 /**
  * Created by ferKarly.
@@ -43,12 +45,12 @@ public class EditAlbumActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            int id = extras.getInt(AlbumAdapter.EXTRA_ID, NO_ID);
-            String word = extras.getString(AlbumAdapter.EXTRA_WORD, NO_WORD);
-            String alb = extras.getString(AlbumAdapter.EXTRA_AlbumId, NO_WORD);
-            String albid = extras.getString(AlbumAdapter.EXTRA_id, NO_WORD);
-            String url = extras.getString(AlbumAdapter.EXTRA_url, NO_WORD);
-            String turl = extras.getString(AlbumAdapter.EXTRA_Turl, NO_WORD);
+            int id = extras.getInt(AlbumAdapter2.EXTRA_ID, NO_ID);
+            String word = extras.getString(AlbumAdapter2.EXTRA_WORD, NO_WORD);
+            String alb = extras.getString(AlbumAdapter2.EXTRA_AlbumId, NO_WORD);
+            String albid = extras.getString(AlbumAdapter2.EXTRA_id, NO_WORD);
+            String url = extras.getString(AlbumAdapter2.EXTRA_url, NO_WORD);
+            String turl = extras.getString(AlbumAdapter2.EXTRA_Turl, NO_WORD);
 
             if (id != NO_ID &&
                     !word.equals(NO_WORD) &&
@@ -62,12 +64,6 @@ public class EditAlbumActivity extends AppCompatActivity {
                 editIDView.setHint(albid);
                 editUrlView.setHint(url);
                 editUrlThumbView.setHint(turl);
-
-                editTituloView.setText(word);
-                editAlbumIdView.setText(alb);
-                editIDView.setText(albid);
-                editUrlView.setText(url);
-                editUrlThumbView.setText(turl);
             } else{
                 Toast.makeText(this, "pos quien sabe", Toast.LENGTH_SHORT).show();
             }
@@ -88,14 +84,14 @@ public class EditAlbumActivity extends AppCompatActivity {
         replyIntent.putExtra(EXTRA_REPLY_U, urlA);
         replyIntent.putExtra(EXTRA_REPLY_Ut, thumburlA);
 
-        replyIntent.putExtra(AlbumAdapter.EXTRA_ID, mId);
+        replyIntent.putExtra(AlbumAdapter2.EXTRA_ID, mId);
         setResult(RESULT_OK, replyIntent);
         finish();
     }
 
     public void returnCancel(View view) {
         Intent replyIntent = new Intent();
-        replyIntent.putExtra(AlbumAdapter.EXTRA_ID, mId);
+
         setResult(RESULT_CANCELED, replyIntent);
         finish();
     }

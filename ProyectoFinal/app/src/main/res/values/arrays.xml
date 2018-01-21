@@ -3,11 +3,14 @@
     <string-array name="ordenarPor_etiquetas">
         <item>Titulo</item>
         <item>Id</item>
+        <item>Conforme insertado</item>
+
     </string-array>
 
     <string-array name="ordenarPor_valores">
         <item>Titulo</item>
         <item>Id</item>
+        <item>Insertado</item>
     </string-array>
 
 </resources>

@@ -5,17 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -27,6 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import dispositivos.moviles.karla.cuatro.AlbumAdapter2.AlbumAdapter2;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -47,52 +45,65 @@ import static dispositivos.moviles.karla.cuatro.EditAlbumActivity.EXTRA_REPLY_Ut
 /**
  * Created by ferKarly.
  * Clase-Programación de Dispositivos Moviles
- * Version -mil ocho mil
+ * Version -mil ocho mil | DOS
+ * Al ordenar por Id compra con strings jejeje en la tabla lo guarde como strings por eso xD.
+ * Tarda mil años en insertar 5mil elementos ._." solo hay que esperar jajaja mucho pero si lo hace :D
  *
- *  el cursor que regresa el loaderMagager... esta de adorno xD
- *  se supone se usa con swap pero pues... explota si hacemos eso
- *  no se está usando para el adapter, cherar AlbumAdapter2 para el uso del cursor adecuado.
- *  Se tarde mil ocho mil horas para mostrar los elementos bajados desde internet (5000 elementos)
- *  pues en el AlbumAdapter por cada vez llamado el bind crea un "nuevo" cursor.
- *  Para pocos elementos insertados al ContentProvider funciona bien.
  */
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainActivity extends AppCompatActivity{
     public static final int WORD_EDIT = 1;
     public static final int WORD_ADD = -1;
+    public static final int MORE_INFO = -3000;
     private static final int CONFIGURACION = 2;
 
     private RecyclerView mRecyclerView;
-    private AlbumAdapter mAdapter;
-
-    private Context mContexto = this;
+    private AlbumAdapter2 adaptador;
 
     private final String URL_JSON_DATA = "https://jsonplaceholder.typicode.com/photos";
     private final Boolean NO_EXISTE = true;
     private final String PRIMERA_KEY = "apicacion creada por primera vez";
+    private final String NO_CONFIG = "no configurado";
 
+    Context miContexto;
 
+    private SharedPreferences sP;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        miContexto = this;
+        sP = PreferenceManager.getDefaultSharedPreferences(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new AlbumAdapter(this,KEY_ID);
-        mRecyclerView.setAdapter(mAdapter);
-        getSupportLoaderManager().restartLoader(0, null, this);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean esPrimera = sharedPreferences.getBoolean(PRIMERA_KEY,NO_EXISTE);
-
+        adaptador = new AlbumAdapter2(this);
+        checkConfig();
+        mRecyclerView.setAdapter(adaptador);
+        Boolean esPrimera = sP.getBoolean(PRIMERA_KEY,NO_EXISTE);
         if(esPrimera) {
             porPrimeraVez();
-            sharedPreferences.edit().putBoolean(PRIMERA_KEY, false).apply();
+            sP.edit().putBoolean(PRIMERA_KEY, false).apply();
         }else{
             porNesimaVez();
         }
+    }
 
+    private void checkConfig(){
+        String ordenaAct = sP.getString("ORDENAR_LIST", NO_CONFIG);
+        if (ordenaAct.equals("Titulo")) {
+            cambiaCursor(KEY_WORD);
+        }else if (ordenaAct.equals("Insertado")){
+            cambiaCursor(KEY_ID);
+        }else if (ordenaAct.equals("Id")){
+            cambiaCursor(KEY_Id);
+        }else{
+            cambiaCursor(KEY_ID);
+        }
+    }
+
+    private void cambiaCursor(String key_orden_columna){
+        Cursor cursor = getBaseContext().getContentResolver().query(Uri.parse(
+                CONTENT_URI.toString()), null, null, null, key_orden_columna);
+        adaptador.swapCursor(cursor, key_orden_columna);
     }
 
     private void porPrimeraVez() {
@@ -100,7 +111,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void porNesimaVez() {
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -117,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(KEY_URL, data.getStringExtra(EXTRA_REPLY_U));
                     values.put(KEY_ThumbnailUrl, data.getStringExtra(EXTRA_REPLY_Ut));
 
-                    int id = data.getIntExtra(AlbumAdapter.EXTRA_ID, -99);
+                    int id = data.getIntExtra(AlbumAdapter2.EXTRA_ID, -99);
 
                     if (id == WORD_ADD) {
                         getContentResolver().insert(CONTENT_URI, values);
@@ -126,8 +138,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         getContentResolver().update(CONTENT_URI, values, KEY_ID, selectionArgs);
                     }
                     // Update the UI.
-                    mAdapter.notifyDataSetChanged();
-                    //adaptador.notifyDataSetChanged();
+                    checkConfig();
                 } else {
                     Toast.makeText(
                             getApplicationContext(), R.string.empty_word_not_saved,
@@ -136,15 +147,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         }
         else if (requestCode == CONFIGURACION){
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String ordenaAct = sharedPreferences.getString("ORDENAR_LIST","Id");
-            if (ordenaAct.equals("Titulo")) {
-                mAdapter = new AlbumAdapter(this,KEY_WORD);
-                mRecyclerView.setAdapter(mAdapter);
-            }else{
-                mAdapter = new AlbumAdapter(this,KEY_Id);
-                mRecyclerView.setAdapter(mAdapter);
-            }
+            checkConfig();
         }
     }
 
@@ -165,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (id == R.id.refresacar) {
             getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
-            mAdapter.notifyDataSetChanged();
+            checkConfig();
             Toast.makeText(this,"refrescando",Toast.LENGTH_LONG);
             new ClaseExtra().execute(URL_JSON_DATA);
             return true;
@@ -179,29 +182,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (id == R.id.eliminar) {
             getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
-            mAdapter.notifyDataSetChanged();
+            checkConfig();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, CONTENT_URI, null, null, null, KEY_ID);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Toast.makeText(mContexto, "YEEEEIIIIII", Toast.LENGTH_SHORT).show();
-        //aqui iria un swap .....pero no sale :/ comportamiento raro.
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
-        mRecyclerView.setAdapter(null);
-        Log.i("CREACION", "onLoaderReset");
     }
 
     private class ClaseExtra extends AsyncTask<String,Void,LinkedList<Post>> {
@@ -265,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         @Override
         protected void onPostExecute(LinkedList<Post> posts) {
             super.onPostExecute(posts);
-            Toast.makeText(MainActivity.this, "Insertando a la base...", Toast.LENGTH_LONG  ).show();
             for (Post word : posts) {
                 ContentValues values = new ContentValues();
                 values.put(KEY_WORD, word.getTitle());
@@ -275,8 +259,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 values.put(KEY_ThumbnailUrl, word.getThumbnailUrl());
                 getContentResolver().insert(CONTENT_URI, values);
             }
-            mAdapter.notifyDataSetChanged();
+            checkConfig();
         }
-    }
 
+    }
 }

@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import dispositivos.moviles.karla.cuatro.AlbumAdapter2.AlbumAdapter2;
+
+
 /**
  * Created by ferKarly.
  * Clase-Programación de Dispositivos Moviles
@@ -22,6 +25,9 @@ public class AlbumInfoActivity extends AppCompatActivity {
     private TextView infoTituloView,infoAlbumIdView,infoIDView,infoUrlView,infoUrlThumbView;
     String url;
     String turl;
+    int mId;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,25 +41,33 @@ public class AlbumInfoActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            int id = extras.getInt(AlbumAdapter.EXTRA_ID, NO_ID);
-            String word = extras.getString("titleExtra_More", NO_WORD);
-            String alb = extras.getString("albumIdExtra_More", NO_WORD);
-            String albid = extras.getString("idExtra_More", NO_WORD);
-            url = extras.getString("urlExtra_More", NO_WORD);
-            turl = extras.getString("thumbnailUrlExtra_More", NO_WORD);
+            int id = extras.getInt(AlbumAdapter2.EXTRA_ID, NO_ID);
+            String word = extras.getString(AlbumAdapter2.EXTRA_WORD, NO_WORD);
+            String alb = extras.getString(AlbumAdapter2.EXTRA_AlbumId, NO_WORD);
+            String albid = extras.getString(AlbumAdapter2.EXTRA_id, NO_WORD);
+            url = extras.getString(AlbumAdapter2.EXTRA_url, NO_WORD);
+            turl = extras.getString(AlbumAdapter2.EXTRA_Turl, NO_WORD);
 
             infoTituloView.setText(word);
             infoAlbumIdView.setText(alb);
             infoIDView.setText(albid);
             infoUrlView.setText(url);
             infoUrlThumbView.setText(turl);
+            mId = id;
 
         }
 
         Picasso.with(this).load(url).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imageView));
         Picasso.with(this).load(turl).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imageView2));
 
+    }
 
+    public void eliminame(View view) {
+        Intent replyIntent = new Intent();
+        replyIntent.putExtra(AlbumAdapter2.EXTRA_ID, mId);
+        replyIntent.putExtra("ELIM", true);
+        setResult(MainActivity.MORE_INFO, replyIntent);
+        finish();
     }
 
     public void mandar (View ver){
