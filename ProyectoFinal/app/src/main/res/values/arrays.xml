@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ordenarPor_etiquetas">
+        <item>Titulo</item>
+        <item>Id</item>
+    </string-array>
+
+    <string-array name="ordenarPor_valores">
+        <item>Titulo</item>
+        <item>Id</item>
+    </string-array>
+
+</resources>

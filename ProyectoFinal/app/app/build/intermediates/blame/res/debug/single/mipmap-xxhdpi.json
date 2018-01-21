@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/trin/AndroidStudioProjects/Cuatro/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher_round.png",
+        "source": "/home/trin/AndroidStudioProjects/Cuatro/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/trin/AndroidStudioProjects/Cuatro/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher.png",
+        "source": "/home/trin/AndroidStudioProjects/Cuatro/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    }
+]

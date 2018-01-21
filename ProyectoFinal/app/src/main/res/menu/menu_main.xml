@@ -1,0 +1,30 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="dispositivos.moviles.karla.cuatro.MainActivity">
+
+    <item
+        android:id="@+id/refresacar"
+        android:orderInCategory="100"
+        android:title="Refrescar"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/añadir"
+        android:orderInCategory="100"
+        android:title="Añadir"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/configuraciones"
+        android:orderInCategory="100"
+        android:title="Configurar"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/eliminar"
+        android:orderInCategory="100"
+        android:title="Eliminar data"
+        app:showAsAction="never" />
+
+</menu>
