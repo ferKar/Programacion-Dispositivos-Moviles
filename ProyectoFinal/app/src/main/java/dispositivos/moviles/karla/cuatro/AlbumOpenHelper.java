@@ -22,7 +22,8 @@ import static dispositivos.moviles.karla.cuatro.Contract.DATABASE_NAME;
 /**
  * Created by ferKarly.
  * Clase-Programación de Dispositivos Moviles
- * Version -mil ocho mil
+ * Version -mil ocho mil | DOS
+ * arreglando la creación de la tabla xD
  */
 class AlbumOpenHelper extends SQLiteOpenHelper {
 
@@ -43,8 +44,8 @@ class AlbumOpenHelper extends SQLiteOpenHelper {
         String cmd = "CREATE TABLE " + WORD_LIST_TABLE + " (" +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 KEY_WORD + " TEXT, " +
-                KEY_ALBUMID + " TEXT, " +
-                KEY_Id + " TEXT, " +
+                KEY_ALBUMID + " INTEGER, " +
+                KEY_Id + " INTEGER, " +
                 KEY_URL + " TEXT, " +
                 KEY_ThumbnailUrl + " TEXT);";
         return cmd;
@@ -52,8 +53,8 @@ class AlbumOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //db.execSQL(creaTabla());
         db.execSQL(creaTabla());
-
     }
 
     @Override

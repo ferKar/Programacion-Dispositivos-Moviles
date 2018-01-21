@@ -46,7 +46,7 @@ import static dispositivos.moviles.karla.cuatro.EditAlbumActivity.EXTRA_REPLY_Ut
  * Created by ferKarly.
  * Clase-Programación de Dispositivos Moviles
  * Version -mil ocho mil | DOS
- * Al ordenar por Id compra con strings jejeje en la tabla lo guarde como strings por eso xD.
+ * ARREGLADO: Al ordenar por Id compra con strings jejeje en la tabla lo guarde como strings por eso xD.
  * Tarda mil años en insertar 5mil elementos ._." solo hay que esperar jajaja mucho pero si lo hace :D
  *
  */
@@ -56,15 +56,14 @@ public class MainActivity extends AppCompatActivity{
     public static final int MORE_INFO = -3000;
     private static final int CONFIGURACION = 2;
 
-    private RecyclerView mRecyclerView;
-    private AlbumAdapter2 adaptador;
-
     private final String URL_JSON_DATA = "https://jsonplaceholder.typicode.com/photos";
     private final Boolean NO_EXISTE = true;
     private final String PRIMERA_KEY = "apicacion creada por primera vez";
     private final String NO_CONFIG = "no configurado";
 
     Context miContexto;
+    private RecyclerView mRecyclerView;
+    private AlbumAdapter2 adaptador;
 
     private SharedPreferences sP;
     @Override
