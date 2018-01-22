@@ -14,19 +14,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="12sp"
+            android:textSize="22sp"
+            android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:text="Información del Album" />
-
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:background="@android:color/background_dark"
-            android:onClick="eliminame"
-            app:srcCompat="@android:drawable/ic_menu_delete" />
 
     </LinearLayout>
 

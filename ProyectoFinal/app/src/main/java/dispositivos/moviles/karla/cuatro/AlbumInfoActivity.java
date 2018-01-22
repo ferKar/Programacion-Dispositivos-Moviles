@@ -37,7 +37,6 @@ public class AlbumInfoActivity extends AppCompatActivity {
         infoIDView = (TextView) findViewById(R.id.idInfoView);
         infoUrlView = (TextView) findViewById(R.id.urlInfoView);
         infoUrlThumbView =(TextView) findViewById(R.id.thumbnailInfoView);
-
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
@@ -62,13 +61,7 @@ public class AlbumInfoActivity extends AppCompatActivity {
 
     }
 
-    public void eliminame(View view) {
-        Intent replyIntent = new Intent();
-        replyIntent.putExtra(AlbumAdapter2.EXTRA_ID, mId);
-        replyIntent.putExtra("ELIM", true);
-        setResult(MainActivity.MORE_INFO, replyIntent);
-        finish();
-    }
+
 
     public void mandar (View ver){
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));

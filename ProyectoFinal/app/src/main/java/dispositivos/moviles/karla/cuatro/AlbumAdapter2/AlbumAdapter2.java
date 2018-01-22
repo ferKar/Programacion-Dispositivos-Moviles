@@ -10,7 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import dispositivos.moviles.karla.cuatro.AlbumInfoActivity;
 import dispositivos.moviles.karla.cuatro.EditAlbumActivity;
@@ -53,7 +56,7 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
         String url, tUrl;
         int idHolder;
         String configSort = KEY_ID;
-
+        ImageView imV;
         Context contexto;
 
         public WordViewHolder(View itemView) {
@@ -64,6 +67,8 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
             idItemView = itemView.findViewById(R.id.idView);
             delete_button = itemView.findViewById(R.id.delete_button);
             edit_button = itemView.findViewById(R.id.edit_button);
+            imV = itemView.findViewById(R.id.imagenItem);
+
             itemView.setOnClickListener(this);
 
             delete_button.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +98,7 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
                     ((Activity) mContext).startActivityForResult(intent, MainActivity.WORD_EDIT);
                 }
             });
+
         }
 
         @Override
@@ -155,6 +161,8 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
         holder.tUrl = tUrlI;
         holder.idHolder = id;
         holder.configSort = keySort;
+
+        Picasso.with(holder.contexto).load(tUrlI).error(R.drawable.ic_no_internet).into(holder.imV);
     }
 
     @Override
