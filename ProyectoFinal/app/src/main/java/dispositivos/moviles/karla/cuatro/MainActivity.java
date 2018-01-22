@@ -22,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.LinkedList;
 
 import dispositivos.moviles.karla.cuatro.AlbumAdapter2.AlbumAdapter2;
 import okhttp3.OkHttpClient;
@@ -45,10 +44,9 @@ import static dispositivos.moviles.karla.cuatro.EditAlbumActivity.EXTRA_REPLY_Ut
 /**
  * Created by ferKarly.
  * Clase-Programación de Dispositivos Moviles
- * Version -mil ocho mil | DOS
- * ARREGLADO: Al ordenar por Id compra con strings jejeje en la tabla lo guarde como strings por eso xD.
+ * Version -mil ocho mil | TRES
  * Tarda mil años en insertar 5mil elementos ._." solo hay que esperar jajaja mucho pero si lo hace :D
- *
+ * Que estaba insertando en exponencial?.... Pues casi....
  */
 public class MainActivity extends AppCompatActivity{
     public static final int WORD_EDIT = 1;
@@ -188,23 +186,24 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private class ClaseExtra extends AsyncTask<String,Void,LinkedList<Post>> {
+    private class ClaseExtra extends AsyncTask<String,Void,Void> {
 
         public final String NO_INTERNET = "NO INTERNET :c";
         public final String JSON_EXCEP_TITULO = "IMPOSIBLE PASAR A JSON";
-        public final String JSON_EXCEP_URL = "liga de gatitos";
+        public final String JSON_EXCEP_URL = "https://siliconangle.com/files/2013/02/no-data.png";
         public final int JSON_EXCEP_ALBUMID = -2;
         public final int JSON_EXCEP_ID = -2;
 
         @Override
-        protected LinkedList<Post> doInBackground(String... url_json_data) {
+        protected Void doInBackground(String... url_json_data) {
             String JSON_DATA;
             try {
                 JSON_DATA = run(url_json_data[0]);
             } catch (IOException e) {
                 JSON_DATA = NO_INTERNET;
             }
-            return makeListAlbums(JSON_DATA);
+            convirteAlbums(JSON_DATA);
+            return null;
         }
 
         private String run(String url) throws IOException {
@@ -213,51 +212,40 @@ public class MainActivity extends AppCompatActivity{
             return response.body().string();
         }
 
-        private LinkedList<Post> makeListAlbums(String json_data){
-            LinkedList<Post> listaAlbums = new LinkedList<>();
+        private void convirteAlbums(String json_data){
             try {
                 JSONArray cadTipoJson = new JSONArray(json_data);
                 for (int i = 0; i < cadTipoJson.length(); i++) {
-                    JSONObject jsonObj = cadTipoJson.getJSONObject(i);
-                    listaAlbums.addLast(hasmePost(jsonObj));
+                    insertaBase(cadTipoJson.getJSONObject(i));
                 }
             }catch (JSONException e) {
-                listaAlbums.addFirst(new Post(
-                        JSON_EXCEP_TITULO +"\n" + json_data,
-                        JSON_EXCEP_ALBUMID,
-                        JSON_EXCEP_ID,
-                        JSON_EXCEP_URL,
-                        JSON_EXCEP_URL));
+                insertaBaseNoInternet(json_data);
             }
-            return  listaAlbums;
         }
 
-        private Post hasmePost(JSONObject jsObj){
-            Post ps;
-            try {
-                ps = new Post(jsObj.getString("title"),
-                        jsObj.getInt("albumId"),
-                        jsObj.getInt("id"),
-                        jsObj.getString("url"),
-                        jsObj.getString("thumbnailUrl"));
-            }catch (JSONException e){
-                ps = new Post();
-            }
-            return ps;
+        private void insertaBaseNoInternet(String json_data){
+            ContentValues values = new ContentValues();
+                values.put(KEY_WORD, JSON_EXCEP_TITULO + "\n" + json_data);
+                values.put(KEY_ALBUMID, JSON_EXCEP_ALBUMID);
+                values.put(KEY_Id, JSON_EXCEP_ID);
+                values.put(KEY_URL, JSON_EXCEP_URL);
+                values.put(KEY_ThumbnailUrl, JSON_EXCEP_URL);
+            getContentResolver().insert(CONTENT_URI, values);
+        }
+
+        private void insertaBase(JSONObject jsObj) throws JSONException{
+            ContentValues values = new ContentValues();
+                values.put(KEY_WORD, jsObj.getString("title"));
+                values.put(KEY_ALBUMID, jsObj.getInt("albumId"));
+                values.put(KEY_Id, jsObj.getInt("id"));
+                values.put(KEY_URL, jsObj.getString("url"));
+                values.put(KEY_ThumbnailUrl, jsObj.getString("thumbnailUrl"));
+            getContentResolver().insert(CONTENT_URI, values);
         }
 
         @Override
-        protected void onPostExecute(LinkedList<Post> posts) {
+        protected void onPostExecute(Void posts) {
             super.onPostExecute(posts);
-            for (Post word : posts) {
-                ContentValues values = new ContentValues();
-                values.put(KEY_WORD, word.getTitle());
-                values.put(KEY_ALBUMID, word.getAlbumId());
-                values.put(KEY_Id, word.getId());
-                values.put(KEY_URL, word.getUrl());
-                values.put(KEY_ThumbnailUrl, word.getThumbnailUrl());
-                getContentResolver().insert(CONTENT_URI, values);
-            }
             checkConfig();
         }
 
