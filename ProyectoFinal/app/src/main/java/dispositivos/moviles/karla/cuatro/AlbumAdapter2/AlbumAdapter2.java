@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -51,9 +50,8 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
     private Cursor item;
 
     public class WordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView wordItemView, albumItemView, idItemView;
         Button delete_button, edit_button;
-        String url, tUrl;
+        String url, tUrl,albumItem,idItem,wordItemView;
         int idHolder;
         String configSort = KEY_ID;
         ImageView imV;
@@ -62,9 +60,6 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
         public WordViewHolder(View itemView) {
             super(itemView);
             contexto = itemView.getContext();
-            wordItemView = itemView.findViewById(R.id.word);
-            albumItemView = itemView.findViewById(R.id.albumId);
-            idItemView = itemView.findViewById(R.id.idView);
             delete_button = itemView.findViewById(R.id.delete_button);
             edit_button = itemView.findViewById(R.id.edit_button);
             imV = itemView.findViewById(R.id.imagenItem);
@@ -90,9 +85,9 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
                     Intent intent = new Intent(mContext, EditAlbumActivity.class);
                     intent.putExtra(EXTRA_ID, idHolder);
                     intent.putExtra(EXTRA_POSITION, getAdapterPosition());
-                    intent.putExtra(EXTRA_AlbumId, albumItemView.getText());
-                    intent.putExtra(EXTRA_id, idItemView.getText());
-                    intent.putExtra(EXTRA_WORD, wordItemView.getText());
+                    intent.putExtra(EXTRA_WORD, wordItemView);
+                    intent.putExtra(EXTRA_AlbumId, albumItem);
+                    intent.putExtra(EXTRA_id, idItem);
                     intent.putExtra(EXTRA_url, url);
                     intent.putExtra(EXTRA_Turl, tUrl);
                     ((Activity) mContext).startActivityForResult(intent, MainActivity.WORD_EDIT);
@@ -106,9 +101,9 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
             Intent intento = new Intent(contexto, AlbumInfoActivity.class);
             intento.putExtra(EXTRA_ID, idHolder);
             intento.putExtra(EXTRA_POSITION, getAdapterPosition());
-            intento.putExtra(EXTRA_AlbumId, albumItemView.getText());
-            intento.putExtra(EXTRA_id, idItemView.getText());
-            intento.putExtra(EXTRA_WORD, wordItemView.getText());
+            intento.putExtra(EXTRA_WORD, wordItemView);
+            intento.putExtra(EXTRA_AlbumId, albumItem);
+            intento.putExtra(EXTRA_id, idItem);
             intento.putExtra(EXTRA_url, url);
             intento.putExtra(EXTRA_Turl, tUrl);
             mContext.startActivity(intento);
@@ -154,9 +149,9 @@ public class AlbumAdapter2 extends RecyclerView.Adapter<AlbumAdapter2.WordViewHo
             id = item.getInt(indexKEY);
         }
 
-        holder.wordItemView.setText(tit);
-        holder.albumItemView.setText(alb);
-        holder.idItemView.setText(idI);
+        holder.wordItemView = tit;
+        holder.albumItem = alb;
+        holder.idItem = idI;
         holder.url = urlI;
         holder.tUrl = tUrlI;
         holder.idHolder = id;

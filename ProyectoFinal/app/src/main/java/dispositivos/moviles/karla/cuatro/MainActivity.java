@@ -51,7 +51,6 @@ import static dispositivos.moviles.karla.cuatro.EditAlbumActivity.EXTRA_REPLY_Ut
 public class MainActivity extends AppCompatActivity{
     public static final int WORD_EDIT = 1;
     public static final int WORD_ADD = -1;
-    public static final int MORE_INFO = -3000;
     private static final int CONFIGURACION = 2;
 
     private final String URL_JSON_DATA = "https://jsonplaceholder.typicode.com/photos";
