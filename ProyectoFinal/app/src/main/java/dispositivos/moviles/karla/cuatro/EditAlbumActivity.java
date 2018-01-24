@@ -30,6 +30,7 @@ public class EditAlbumActivity extends AppCompatActivity {
     public static final String EXTRA_REPLY_U = "dispositivos.moviles.karla.cuatro.URL";
     public static final String EXTRA_REPLY_Ut = "dispositivos.moviles.karla.cuatro.TURL";
 
+    private String url, turl;
 
     int mId = MainActivity.WORD_ADD;
 
@@ -46,27 +47,27 @@ public class EditAlbumActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        String url = extras.getString(AlbumAdapter2.EXTRA_url, NO_WORD);
-        String turl = extras.getString(AlbumAdapter2.EXTRA_Turl, NO_WORD);
+        if(extras != null) {
+            mId = extras.getInt(AlbumAdapter2.EXTRA_ID, NO_ID);
+            editTituloView.setHint(extras.getString(AlbumAdapter2.EXTRA_WORD, NO_WORD));
+            editAlbumIdView.setHint(extras.getString(AlbumAdapter2.EXTRA_AlbumId, NO_WORD));
+            editIDView.setHint(extras.getString(AlbumAdapter2.EXTRA_id, NO_WORD));
+            url = extras.getString(AlbumAdapter2.EXTRA_url, NO_WORD);
+            turl = extras.getString(AlbumAdapter2.EXTRA_Turl, NO_WORD);
+            editUrlView.setHint(url);
+            editUrlThumbView.setHint(turl);
 
-        mId = extras.getInt(AlbumAdapter2.EXTRA_ID, NO_ID);
-        editTituloView.setHint(extras.getString(AlbumAdapter2.EXTRA_WORD, NO_WORD));
-        editAlbumIdView.setHint(extras.getString(AlbumAdapter2.EXTRA_AlbumId, NO_WORD));
-        editIDView.setHint(extras.getString(AlbumAdapter2.EXTRA_id, NO_WORD));
-        editUrlView.setHint(url);
-        editUrlThumbView.setHint(turl);
-
-        Picasso.with(this).load(url).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imagenEditView));
-        Picasso.with(this).load(turl).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imagenEditView2));
-
+            Picasso.with(this).load(url).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imagenEditView));
+            Picasso.with(this).load(turl).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imagenEditView2));
+        }
     }
 
-    public void returnReply(View view) {
-        String word = ((EditText) findViewById(R.id.tituloEditView)).getText().toString();
-        String albumIdA = ((EditText) findViewById(R.id.albumEditView)).getText().toString();
-        String idA = ((EditText) findViewById(R.id.idEditView)).getText().toString();
-        String urlA = ((EditText) findViewById(R.id.urlEditView)).getText().toString();
-        String thumburlA = ((EditText) findViewById(R.id.thumbnailUrlEditView)).getText().toString();
+    public void returnReply(View view) {/*
+        String word = editTituloView.getText().toString();
+        String albumIdA = editAlbumIdView.getText().toString();
+        String idA = editIDView.getText().toString();
+        String urlA = editUrlView.getText().toString();
+        String thumburlA = editUrlThumbView.getText().toString();
 
         Intent replyIntent = new Intent();
         replyIntent.putExtra(EXTRA_REPLY_T, word);
@@ -77,12 +78,12 @@ public class EditAlbumActivity extends AppCompatActivity {
 
         replyIntent.putExtra(AlbumAdapter2.EXTRA_ID, mId);
         setResult(RESULT_OK, replyIntent);
-        finish();
+        finish();*/
     }
 
     public void returnCancel(View view) {
         Intent replyIntent = new Intent();
-
+        replyIntent.putExtra(AlbumAdapter2.EXTRA_ID, mId);
         setResult(RESULT_CANCELED, replyIntent);
         finish();
     }
