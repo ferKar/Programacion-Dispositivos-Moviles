@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity{
 
     private final String URL_JSON_DATA = "https://jsonplaceholder.typicode.com/photos";
     private final Boolean NO_EXISTE = true;
-    private final String PRIMERA_KEY = "apicacion creada por primera vez";
+    private final String PRIMERA_KEY = "aplicacion creada por primera vez";
     private final String NO_CONFIG = "no configurado";
 
     Context miContexto;
@@ -214,7 +214,8 @@ public class MainActivity extends AppCompatActivity{
         private void convirteAlbums(String json_data){
             try {
                 JSONArray cadTipoJson = new JSONArray(json_data);
-                for (int i = 0; i < cadTipoJson.length(); i++) {
+                int hasta = 50; //cadTipoJson.length()
+                for (int i = 0; i < hasta; i++) {
                     insertaBase(cadTipoJson.getJSONObject(i));
                 }
             }catch (JSONException e) {

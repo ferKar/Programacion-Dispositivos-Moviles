@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import dispositivos.moviles.karla.cuatro.AlbumAdapter2.AlbumAdapter2;
 
@@ -44,30 +46,19 @@ public class EditAlbumActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        if (extras != null) {
-            int id = extras.getInt(AlbumAdapter2.EXTRA_ID, NO_ID);
-            String word = extras.getString(AlbumAdapter2.EXTRA_WORD, NO_WORD);
-            String alb = extras.getString(AlbumAdapter2.EXTRA_AlbumId, NO_WORD);
-            String albid = extras.getString(AlbumAdapter2.EXTRA_id, NO_WORD);
-            String url = extras.getString(AlbumAdapter2.EXTRA_url, NO_WORD);
-            String turl = extras.getString(AlbumAdapter2.EXTRA_Turl, NO_WORD);
+        String url = extras.getString(AlbumAdapter2.EXTRA_url, NO_WORD);
+        String turl = extras.getString(AlbumAdapter2.EXTRA_Turl, NO_WORD);
 
-            if (id != NO_ID &&
-                    !word.equals(NO_WORD) &&
-                    !alb.equals(NO_WORD) &&
-                    !albid.equals(NO_WORD) &&
-                    !url.equals(NO_WORD) &&
-                    !turl.equals(NO_WORD)){
-                mId = id;
-                editTituloView.setHint(word);
-                editAlbumIdView.setHint(alb);
-                editIDView.setHint(albid);
-                editUrlView.setHint(url);
-                editUrlThumbView.setHint(turl);
-            } else{
-                Toast.makeText(this, "pos quien sabe", Toast.LENGTH_SHORT).show();
-            }
-        }
+        mId = extras.getInt(AlbumAdapter2.EXTRA_ID, NO_ID);
+        editTituloView.setHint(extras.getString(AlbumAdapter2.EXTRA_WORD, NO_WORD));
+        editAlbumIdView.setHint(extras.getString(AlbumAdapter2.EXTRA_AlbumId, NO_WORD));
+        editIDView.setHint(extras.getString(AlbumAdapter2.EXTRA_id, NO_WORD));
+        editUrlView.setHint(url);
+        editUrlThumbView.setHint(turl);
+
+        Picasso.with(this).load(url).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imagenEditView));
+        Picasso.with(this).load(turl).error(R.drawable.ic_info_black_24dp).into((ImageView) findViewById(R.id.imagenEditView2));
+
     }
 
     public void returnReply(View view) {

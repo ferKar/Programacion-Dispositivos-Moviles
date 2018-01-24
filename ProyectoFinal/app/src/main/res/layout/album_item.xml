@@ -3,58 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
-    android:elevation="21dp"
-    android:orientation="vertical"
-    android:padding="2dp">
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="@android:color/background_light"
         app:cardElevation="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/imagenItem"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:background="@android:color/black"
-                android:scaleType="centerCrop"
+                android:scaleType="fitStart"
                 app:srcCompat="@drawable/ic_no_internet" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="3dp"
-                android:background="@color/cardview_shadow_start_color" />
-
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="end">
+                android:layout_gravity="bottom"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/edit_button"
-                    android:layout_width="36dp"
-                    android:layout_height="@dimen/button_height"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/ic_editar"
-                    android:textColor="@color/buttonLabel" />
-                <Button
-                    android:id="@+id/delete_button"
-                    android:layout_width="36dp"
-                    android:layout_height="@dimen/button_height"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/ic_action_name"
-                    android:backgroundTint="@android:color/holo_red_dark"
-                    android:textColor="@color/buttonLabel" />
+                <TextView
+                    android:id="@+id/tituloView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Titulin........muy muy largo"
+                    android:textSize="12sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="3dp"
+                    android:background="@color/buttonLabel" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/edit_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/ic_editar"
+                        android:textColor="@color/buttonLabel" />
+
+                    <Button
+                        android:id="@+id/delete_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/ic_action_name"
+                        android:backgroundTint="@android:color/holo_red_dark"
+                        android:textColor="@color/buttonLabel" />
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
