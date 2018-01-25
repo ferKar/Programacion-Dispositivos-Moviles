@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,16 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
 import dispositivos.moviles.karla.cuatro.AlbumAdapter2.AlbumAdapter2;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static dispositivos.moviles.karla.cuatro.Contract.CONTENT_URI;
 import static dispositivos.moviles.karla.cuatro.Contract.Columnas.KEY_ALBUMID;
@@ -48,7 +41,7 @@ import static dispositivos.moviles.karla.cuatro.EditAlbumActivity.EXTRA_REPLY_Ut
  * Tarda mil años en insertar 5mil elementos ._." solo hay que esperar jajaja mucho pero si lo hace :D
  * Que estaba insertando en exponencial?.... Pues casi....
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int WORD_EDIT = 1;
     public static final int WORD_ADD = -1;
     private static final int CONFIGURACION = 2;
@@ -56,7 +49,7 @@ public class MainActivity extends AppCompatActivity{
     private final String URL_JSON_DATA = "https://jsonplaceholder.typicode.com/photos";
     private final Boolean NO_EXISTE = true;
     private final String PRIMERA_KEY = "aplicacion creada por primera vez";
-    private final String NO_CONFIG = "no configurado";
+    private final String NO_CONFIG = KEY_ID; // orden del los elementos no configurado
 
     Context miContexto;
     private RecyclerView mRecyclerView;
@@ -74,6 +67,9 @@ public class MainActivity extends AppCompatActivity{
         adaptador = new AlbumAdapter2(this);
         checkConfig();
         mRecyclerView.setAdapter(adaptador);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
+
         Boolean esPrimera = sP.getBoolean(PRIMERA_KEY,NO_EXISTE);
         if(esPrimera) {
             porPrimeraVez();
@@ -83,16 +79,24 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    private String getConfig_Order_Data(){
+        return sP.getString("ORDENAR_LIST", NO_CONFIG);
+    }
+
     private void checkConfig(){
-        String ordenaAct = sP.getString("ORDENAR_LIST", NO_CONFIG);
-        if (ordenaAct.equals("Titulo")) {
-            cambiaCursor(KEY_WORD);
-        }else if (ordenaAct.equals("Insertado")){
-            cambiaCursor(KEY_ID);
-        }else if (ordenaAct.equals("Id")){
-            cambiaCursor(KEY_Id);
-        }else{
-            cambiaCursor(KEY_ID);
+        switch (getConfig_Order_Data()){
+            case "Titulo":
+                cambiaCursor(KEY_WORD);
+                break;
+            case "Insertado":
+                cambiaCursor(KEY_ID);
+                break;
+            case "Id":
+                cambiaCursor(KEY_Id);
+                break;
+            default:
+                cambiaCursor(KEY_ID);
+                break;
         }
     }
 
@@ -103,7 +107,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void porPrimeraVez() {
-        new ClaseExtra().execute(URL_JSON_DATA);
+        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     private void porNesimaVez() {
@@ -117,7 +121,7 @@ public class MainActivity extends AppCompatActivity{
 
             if (resultCode == RESULT_OK) {
                 if (data.getStringExtra(EXTRA_REPLY_T).length() != 0
-                        && data.getStringExtra(EXTRA_REPLY_A).length() != 0) {
+                        && data.getStringExtra(EXTRA_REPLY_I).length() != 0) { // faltan ands
                     ContentValues values = new ContentValues();
                     values.put(KEY_WORD, data.getStringExtra(EXTRA_REPLY_T));
                     values.put(KEY_ALBUMID,data.getStringExtra(EXTRA_REPLY_A));
@@ -133,7 +137,6 @@ public class MainActivity extends AppCompatActivity{
                         String[] selectionArgs = {Integer.toString(id)};
                         getContentResolver().update(CONTENT_URI, values, KEY_ID, selectionArgs);
                     }
-                    // Update the UI.
                     checkConfig();
                 } else {
                     Toast.makeText(
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity{
         }
         else if (requestCode == CONFIGURACION){
             checkConfig();
+            Toast.makeText(this,"Ahora tienes: " + adaptador.getItemCount(),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -155,99 +159,53 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.añadir) {
-            Intent intent = new Intent(getBaseContext(), EditAlbumActivity.class);
-            startActivityForResult(intent, WORD_EDIT);
-            return true;
+        boolean regreso;
+        switch (item.getItemId()){
+            case R.id.añadir:
+                Intent intent = new Intent(getBaseContext(), EditAlbumActivity.class);
+                startActivityForResult(intent, WORD_EDIT);
+                regreso = true;
+                break;
+            case R.id.refresacar:
+                getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
+                checkConfig();
+                Toast.makeText(this,"refrescando ahorita no hace nada jejeje",Toast.LENGTH_LONG).show();
+                //new ClaseExtra().execute(URL_JSON_DATA);
+                regreso = true;
+                break;
+            case R.id.configuraciones:
+                intent = new Intent(getBaseContext(), ConfiguracionActivity.class);
+                startActivityForResult(intent, CONFIGURACION);
+                regreso = true;
+                break;
+            case R.id.eliminar:
+                getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
+                checkConfig();
+                regreso = true;
+                break;
+            default:
+                regreso =  super.onOptionsItemSelected(item);
+                break;
         }
-
-        if (id == R.id.refresacar) {
-            getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
-            checkConfig();
-            Toast.makeText(this,"refrescando",Toast.LENGTH_LONG);
-            new ClaseExtra().execute(URL_JSON_DATA);
-            return true;
-        }
-
-        if (id == R.id.configuraciones) {
-            Intent intent = new Intent(getBaseContext(), ConfiguracionActivity.class);
-            startActivityForResult(intent, CONFIGURACION);
-            return true;
-        }
-
-        if (id == R.id.eliminar) {
-            getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
-            checkConfig();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return regreso;
     }
 
-    private class ClaseExtra extends AsyncTask<String,Void,Void> {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Toast.makeText(this, "Descargando e insertando a la base... ", Toast.LENGTH_LONG).show();
 
-        public final String NO_INTERNET = "NO INTERNET :c";
-        public final String JSON_EXCEP_TITULO = "IMPOSIBLE PASAR A JSON";
-        public final String JSON_EXCEP_URL = "https://siliconangle.com/files/2013/02/no-data.png";
-        public final int JSON_EXCEP_ALBUMID = -2;
-        public final int JSON_EXCEP_ID = -2;
+        return new CursorLoaderAlbum(this, URL_JSON_DATA, getConfig_Order_Data());
+    }
 
-        @Override
-        protected Void doInBackground(String... url_json_data) {
-            String JSON_DATA;
-            try {
-                JSON_DATA = run(url_json_data[0]);
-            } catch (IOException e) {
-                JSON_DATA = NO_INTERNET;
-            }
-            convirteAlbums(JSON_DATA);
-            return null;
-        }
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adaptador.swapCursor(data, getConfig_Order_Data());
+        Toast.makeText(this, data.getCount() + " elementos " , Toast.LENGTH_LONG).show();
+    }
 
-        private String run(String url) throws IOException {
-            Request request = new Request.Builder().url(url).build();
-            Response response = new OkHttpClient().newCall(request).execute();
-            return response.body().string();
-        }
-
-        private void convirteAlbums(String json_data){
-            try {
-                JSONArray cadTipoJson = new JSONArray(json_data);
-                int hasta = 50; //cadTipoJson.length()
-                for (int i = 0; i < hasta; i++) {
-                    insertaBase(cadTipoJson.getJSONObject(i));
-                }
-            }catch (JSONException e) {
-                insertaBaseNoInternet(json_data);
-            }
-        }
-
-        private void insertaBaseNoInternet(String json_data){
-            ContentValues values = new ContentValues();
-                values.put(KEY_WORD, JSON_EXCEP_TITULO + "\n" + json_data);
-                values.put(KEY_ALBUMID, JSON_EXCEP_ALBUMID);
-                values.put(KEY_Id, JSON_EXCEP_ID);
-                values.put(KEY_URL, JSON_EXCEP_URL);
-                values.put(KEY_ThumbnailUrl, JSON_EXCEP_URL);
-            getContentResolver().insert(CONTENT_URI, values);
-        }
-
-        private void insertaBase(JSONObject jsObj) throws JSONException{
-            ContentValues values = new ContentValues();
-                values.put(KEY_WORD, jsObj.getString("title"));
-                values.put(KEY_ALBUMID, jsObj.getInt("albumId"));
-                values.put(KEY_Id, jsObj.getInt("id"));
-                values.put(KEY_URL, jsObj.getString("url"));
-                values.put(KEY_ThumbnailUrl, jsObj.getString("thumbnailUrl"));
-            getContentResolver().insert(CONTENT_URI, values);
-        }
-
-        @Override
-        protected void onPostExecute(Void posts) {
-            super.onPostExecute(posts);
-            checkConfig();
-        }
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adaptador.swapCursor(null,null);
 
     }
 }

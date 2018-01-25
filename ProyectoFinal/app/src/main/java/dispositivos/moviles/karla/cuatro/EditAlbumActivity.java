@@ -62,7 +62,8 @@ public class EditAlbumActivity extends AppCompatActivity {
         }
     }
 
-    public void returnReply(View view) {/*
+    public void returnReply(View view) {
+
         String word = editTituloView.getText().toString();
         String albumIdA = editAlbumIdView.getText().toString();
         String idA = editIDView.getText().toString();
@@ -78,7 +79,7 @@ public class EditAlbumActivity extends AppCompatActivity {
 
         replyIntent.putExtra(AlbumAdapter2.EXTRA_ID, mId);
         setResult(RESULT_OK, replyIntent);
-        finish();*/
+        finish();
     }
 
     public void returnCancel(View view) {
