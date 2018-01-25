@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import dispositivos.moviles.karla.cuatro.AlbumAdapter2.AlbumAdapter2;
@@ -107,7 +108,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void porPrimeraVez() {
-        getSupportLoaderManager().initLoader(0, null, this);
+        mRecyclerView.setVisibility(View.INVISIBLE);// para que se muestre la barra de progreso
+        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     private void porNesimaVez() {
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     checkConfig();
                 } else {
                     Toast.makeText(
-                            getApplicationContext(), R.string.empty_word_not_saved,
+                            getApplicationContext(), "¡Ingresa todos los datos por favor!",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -168,9 +170,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
             case R.id.refresacar:
                 getContentResolver().delete(Contract.ROW_COUNT_URI,null,null);
-                checkConfig();
-                Toast.makeText(this,"refrescando ahorita no hace nada jejeje",Toast.LENGTH_LONG).show();
-                //new ClaseExtra().execute(URL_JSON_DATA);
+                checkConfig();// solo para notificar que ya fueron todos los datos.
+                Toast.makeText(this,"Actualizando...",Toast.LENGTH_SHORT).show();
+                porPrimeraVez();
                 regreso = true;
                 break;
             case R.id.configuraciones:
@@ -199,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mRecyclerView.setVisibility(View.VISIBLE);
         adaptador.swapCursor(data, getConfig_Order_Data());
         Toast.makeText(this, data.getCount() + " elementos " , Toast.LENGTH_LONG).show();
     }
